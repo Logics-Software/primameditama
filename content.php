@@ -13,7 +13,7 @@
                                     <span class="icon-bar"></span>
                                     <span class="icon-bar"></span>
                                 </button>
-                                <img src="layout/indoprima.png" alt="Indoprima Online" height="50" style="margin-right:10px; float:left"/>
+                                <img src="layout/primameditama.png" alt="Indoprima Online" height="50" style="margin-right:10px; float:left"/>
                                 <a class="navbar-brand" href=""><strong>Online</strong></a>
                             </div>
                             <div id="navbar" class="collapse navbar-collapse">
@@ -26,8 +26,6 @@
                                                 <ul class="dropdown-menu">
                                                     <li><a href="index.php?page=daftar-harga-jual">Daftar Stok dan Harga Barang</a></li>
                                                     <li><a href="index.php?page=daftar-harga-batch">Daftar Stok dan Harga per Batch</a></li> 
-                                                    <li><a href="index.php?page=daftar-persediaan">Daftar Persediaan per Batch</a></li> 
-                                                    <li><a href="index.php?page=daftar-persediaan-barang">Daftar Persediaan per Barang</a></li> 
                                                 </ul>
                                         </li>
                                         <?php

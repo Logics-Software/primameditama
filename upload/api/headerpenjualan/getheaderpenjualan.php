@@ -1,7 +1,7 @@
 <?php
 
 include_once '../../config/Database.php';
-include_once '../../models/FileCustomer.php';
+include_once '../../models/HeaderPenjualan.php';
 
 header('Access-Control-Allow-Origin: *');
 header('Content-Type: application/json');
@@ -11,10 +11,10 @@ $database = new Database();
 $db = $database->connect();
 
 // Instantiate FileCustomer object
-$filecustomer = new FileCustomer($db);
+$headerpenjualan = new HeaderPenjualan($db);
 
 // Get customer(s)
-$response = $filecustomer->getcustomer();
+$response = $headerpenjualan->getheaderpenjualan();
 
 // Output JSON response
 echo json_encode($response);

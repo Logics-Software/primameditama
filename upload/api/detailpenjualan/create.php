@@ -18,23 +18,67 @@
   // Get raw posted data
   $data = json_decode(file_get_contents("php://input"));
 
-  $detailpenjualan->nopenjualan = $data->nopenjualan;
-  $detailpenjualan->kodebarang = $data->kodebarang;
-  $detailpenjualan->namabarang = $data->namabarang;
-  $detailpenjualan->satuan = $data->satuan;
-  $detailpenjualan->jumlah = $data->jumlah;
-  $detailpenjualan->hargajual = $data->hargajual;
-  $detailpenjualan->discount= $data->discount;
-  $detailpenjualan->totalharga = $data->totalharga;
-  $detailpenjualan->nourut = $data->nourut;
-
-  // Create Category
-  if($detailpenjualan->create()) {
-    echo json_encode(
-      array('message' => 'Detail Penjualan Created')
-    );
-  } else {
-    echo json_encode(
-      array('message' => 'Detail Penjualan Not Created')
-    );
+  //delete data
+  foreach ($data as $item) {
+    $detailpenjualan->nopenjualan = $item->nopenjualan;
+    $detailpenjualan->delete();
   }
+  
+  if (!is_array($data)) {
+        $success = 0;
+        $fail = 0;
+        //insert data
+        $detailpenjualan->nopenjualan = $data->nopenjualan;
+        $detailpenjualan->kodebarang = $data->kodebarang;
+        $detailpenjualan->nopembelian = $data->nopembelian;
+        $detailpenjualan->nomorbatch = $data->nomorbatch;
+        $detailpenjualan->expireddate = $data->expireddate;
+        $detailpenjualan->jumlah = $data->jumlah;
+        $detailpenjualan->hargajual = $data->hargajual;
+        $detailpenjualan->discount1= $data->discount1;
+        $detailpenjualan->discount2= $data->discount2;
+        $detailpenjualan->cn= $data->cn;
+        $detailpenjualan->totalharga = $data->totalharga;
+        $detailpenjualan->nourut = $data->nourut;
+        if ($detailpenjualan->create()) {
+            $success++;
+        } else {
+            $fail++;
+        }
+        $response = [
+            'status' => $fail === 0 ? 200 : 207,
+            'inserted' => "$success",
+            'failed' => "$fail",
+            'message' => "Inserted: $success, Failed: $fail"
+        ];
+  } else {
+      $success = 0;
+      $fail = 0;
+      foreach ($data as $item) {
+          //insert data
+          $detailpenjualan->nopenjualan = $item->nopenjualan;
+          $detailpenjualan->kodebarang = $item->kodebarang;
+          $detailpenjualan->nopembelian = $item->nopembelian;
+          $detailpenjualan->nomorbatch = $item->nomorbatch;
+          $detailpenjualan->expireddate = $item->expireddate;
+          $detailpenjualan->jumlah = $item->jumlah;
+          $detailpenjualan->hargajual = $item->hargajual;
+          $detailpenjualan->discount1= $item->discount1;
+          $detailpenjualan->discount2= $item->discount2;
+          $detailpenjualan->cn= $item->cn;
+          $detailpenjualan->totalharga = $item->totalharga;
+          $detailpenjualan->nourut = $item->nourut;
+          if ($detailpenjualan->create()) {
+              $success++;
+          } else {
+              $fail++;
+          }
+      }
+      $response = [
+          'status' => $fail === 0 ? 200 : 207,
+          'inserted' => "$success",
+          'failed' => "$fail",
+          'message' => "Inserted: $success, Failed: $fail"
+      ];
+  }
+  echo json_encode($response);

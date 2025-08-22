@@ -154,9 +154,9 @@
   }
 
   // Update Status Barang
-  public function update() {
+  public function updatestatus() {
     // Create query
-    $query = 'UPDATE ' . $this->table  . ' SET status =: 1 WHERE kodebarang = :kodebarang';
+    $query = 'UPDATE ' . $this->table  . ' SET status = 1 WHERE kodebarang = :kodebarang';
 
     // Prepare Statement
     $stmt = $this->conn->prepare($query);
@@ -179,22 +179,9 @@
   }
 
   // get Barang
-  public function getbarang($kodebarang = null) {
-    $query = "SELECT * FROM " . $this->table;
-    $params = [];
-
-    if ($kodebarang !== null) {
-        $query .= " WHERE status = 1 && kodebarang = :kodebarang";
-        $params[':kodebarang'] = $kodebarang;
-    }
-
+  public function getbarang() {
+    $query = "SELECT * FROM " . $this->table . " WHERE status = 0";
     $stmt = $this->conn->prepare($query);
-
-    // Bind parameter if needed
-    if ($kodebarang !== null) {
-        $stmt->bindParam(':kodebarang', $kodebarang);
-    }
-
     $stmt->execute();
 
     $data = [];
@@ -202,7 +189,7 @@
         $data[] = $row;
     }
 
-    if ($kodebarang !== null && empty($data)) {
+    if (empty($data)) {
         return [
             'status' => 404,
             'message' => 'Barang not found.',
@@ -213,7 +200,7 @@
     return [
         'status' => 200,
         'message' => 'Get Barang Successfully.',
-        'data' => $kodebarang !== null ? $data[0] : $data
+        'data' => $data
     ];
   }
 }

@@ -20,10 +20,10 @@
                 <select name="namapabrik" id="namapabrik" class="form-control">
                     <option value="">SEMUA PABRIK</option>
                     <?php
-                        $A_SQL = mysqli_query($A_CONNECT,"SELECT DISTINCTROW namapabrik FROM daftarharga ORDER BY NamaPabrik");
+                        $A_SQL = mysqli_query($A_CONNECT, "SELECT DISTINCTROW kodepabrik FROM filebarang ORDER BY kodepabrik");
                         while($A_RES = mysqli_fetch_array($A_SQL,MYSQLI_ASSOC)){
                         ?>
-                            <option value="<?php echo $A_RES['namapabrik']; ?>"><?php echo $A_RES['namapabrik']; ?></option>
+                            <option value="<?php echo $A_RES['kodepabrik']; ?>"><?php echo $A_RES['kodepabrik']; ?></option>
                         <?php
                         }
                     ?>
@@ -37,8 +37,8 @@
 <?php
 if(isset($_POST['submitlaporan'])){
     $A_FIND = $_POST['namabarang'];
-    $A_STOK = $_POST['stokbarang'];
-    $A_NAMAPABRIK = $_POST['namapabrik'];
+    $A_STOK = $_POST['stokakhir'];
+    $A_NAMAPABRIK = $_POST['kodepabrik'];
     $A_QUERY = '';
     $A_KONDISI1 = '';
     $A_KONDISI2 = '';
@@ -47,16 +47,18 @@ if(isset($_POST['submitlaporan'])){
     ?>
     <h3>Daftar Stok dan Harga Barang</h3>
     <?php
-    $A_QUERY = "SELECT namabarang, satuan, namapabrik, namagolongan, hargajual, discount, kodebarang, 
-                SUM(stokakhir) AS stokakhir FROM daftarharga ";
+    $A_QUERY = "SELECT b.namabarang, b.satuan, b.kodepabrik, b.kodegolongan, b.hargar, b.discr1, b.kodebarang, 
+                IFNULL(SUM(s.stokakhir),0) AS stokakhir 
+                FROM filebarang b 
+                LEFT JOIN stokbarang s ON b.kodebarang = S.kodebarang";
     if (trim($A_FIND) <> ''){
         $A_KONDISI1 = "namabarang LIKE '%".$A_FIND."%' ";
     }
     if ($A_STOK == 2){
-        $A_KONDISI2 = "stokakhir > 0 ";
+        $A_KONDISI2 = "IFNULL(SUM(s.stokakhir),0) > 0 ";
     }
     if (trim($A_NAMAPABRIK) <> ''){
-        $A_KONDISI3 = "namapabrik = '".$A_NAMAPABRIK."' ";
+        $A_KONDISI3 = "kodepabrik = '".$A_NAMAPABRIK."' ";
     }
 
     if (trim($A_KONDISI1)<>'' && trim($A_KONDISI2)<>''){
@@ -65,26 +67,29 @@ if(isset($_POST['submitlaporan'])){
     if (trim(($A_KONDISI1)<>'' || trim($A_KONDISI2)<>'') && trim($A_KONDISI3)<>''){$A_KONDISI3 = " AND ".$A_KONDISI3;}
 
     if (trim($A_KONDISI1)<>'' || trim($A_KONDISI2)<>'' || trim($A_KONDISI3)<>''){
-        $A_QUERY = $A_QUERY . " WHERE namabarang <> '' AND " . $A_KONDISI1 . $A_KONDISI2 . $A_KONDISI3 . " GROUP BY namabarang, satuan, namapabrik, namagolongan, hargajual, discount, kodebarang";
+        $A_QUERY = $A_QUERY . " WHERE namabarang <> '' AND " . $A_KONDISI1 . $A_KONDISI2 . $A_KONDISI3 . " GROUP BY namabarang, satuan, namapabrik, namagolongan, hargajual, discount, kodebarang ";
     }else{
-        $A_QUERY = $A_QUERY . " WHERE namabarang <> '' GROUP BY namabarang, satuan, namapabrik, namagolongan, hargajual, discount, kodebarang";
+        $A_QUERY = $A_QUERY . " WHERE namabarang <> '' GROUP BY namabarang, satuan, namapabrik, namagolongan, hargajual, discount, kodebarang ";
     }
+    $A_QUERY = $A_QUERY . "GROUP BY b.namabarang, b.satuan, b.kodepabrik, b.kodegolongan, b.hargar, b.discr1, b.kodebarang";
     $A_FOLDER_PATH = "download-harga.php?querytext=".$A_QUERY;
     ?>
     <a class="btn btn-warning btn-block" target="_blank" href=" <?=$A_FOLDER_PATH?> ">Download Daftar Stok & Harga</a><br/>
     <table class="table table-bordered">
         <tbody>
             <?php
-                $A_QUERY = "SELECT namabarang, satuan, namapabrik, namagolongan, hargajual, discount, kodebarang, 
-                            SUM(stokakhir) AS stokakhir FROM daftarharga ";
+                $A_QUERY = "SELECT b.namabarang, b.satuan, b.kodepabrik, b.kodegolongan, b.hargar, b.discr1, b.kodebarang, 
+                            IFNULL(SUM(s.stokakhir),0) AS stokakhir 
+                            FROM filebarang b 
+                            LEFT JOIN stokbarang s ON b.kodebarang = S.kodebarang";
                 if (trim($A_FIND) <> ''){
                     $A_KONDISI1 = "namabarang LIKE '%".$A_FIND."%' ";
                 }
                 if ($A_STOK == 2){
-                    $A_KONDISI2 = "stokakhir > 0 ";
+                    $A_KONDISI2 = "IFNULL(SUM(s.stokakhir),0) > 0 ";
                 }
                 if (trim($A_NAMAPABRIK) <> ''){
-                    $A_KONDISI3 = "namapabrik = '".$A_NAMAPABRIK."' ";
+                    $A_KONDISI3 = "kodepabrik = '".$A_NAMAPABRIK."' ";
                 }
                 
                 if (trim($A_KONDISI1)<>'' && trim($A_KONDISI2)<>''){
@@ -93,9 +98,9 @@ if(isset($_POST['submitlaporan'])){
                 if (trim(($A_KONDISI1)<>'' || trim($A_KONDISI2)<>'') && trim($A_KONDISI3)<>''){$A_KONDISI3 = " AND ".$A_KONDISI3;}
     
                 if (trim($A_KONDISI1)<>'' || trim($A_KONDISI2)<>'' || trim($A_KONDISI3)<>''){
-                    $A_QUERY = $A_QUERY . " WHERE namabarang <> '' AND " . $A_KONDISI1 . $A_KONDISI2 . $A_KONDISI3 . " GROUP BY namabarang, satuan, namapabrik, namagolongan, hargajual, discount, kodebarang";
+                    $A_QUERY = $A_QUERY . " WHERE namabarang <> '' AND " . $A_KONDISI1 . $A_KONDISI2 . $A_KONDISI3 . " GROUP BY b.namabarang, b.satuan, b.kodepabrik, b.kodegolongan, b.hargar, b.discr1, b.kodebarang ";
                 }else{
-                    $A_QUERY = $A_QUERY . " WHERE namabarang <> '' GROUP BY namabarang, satuan, namapabrik, namagolongan, hargajual, discount, kodebarang";
+                    $A_QUERY = $A_QUERY . " WHERE namabarang <> '' GROUP BY b.namabarang, b.satuan, b.kodepabrik, b.kodegolongan, b.hargar, b.discr1, b.kodebarang ";
                 }
                 $A_SQL = mysqli_query($A_CONNECT,$A_QUERY);
                 while($A_RES = mysqli_fetch_array($A_SQL,MYSQLI_ASSOC)){
@@ -103,8 +108,8 @@ if(isset($_POST['submitlaporan'])){
                 <tr>
                     <td><?php echo $A_RES['namabarang']; ?></td>
                     <td align="right"><?php echo number_format($A_RES['stokakhir']); ?></td>
-                    <td align="right"><?php echo number_format($A_RES['hargajual']); ?></td>
-                    <td align="right"><?php echo number_format($A_RES['discount'],2); ?></td>
+                    <td align="right"><?php echo number_format($A_RES['hargar']); ?></td>
+                    <td align="right"><?php echo number_format($A_RES['discr1'],2); ?></td>
                 </tr>
                 <?php
                 }
@@ -130,24 +135,26 @@ if(isset($_POST['submitlaporan'])){
         </thead>
         <tbody>
             <?php
-                $A_QUERY = "SELECT namabarang, satuan, namapabrik, namagolongan, hargajual, discount, kodebarang, 
-                            SUM(stokakhir) AS stokakhir FROM daftarharga 
-                            GROUP BY namabarang, satuan, namapabrik, namagolongan, hargajual, discount, kodebarang";
+                $A_QUERY = "SELECT b.namabarang, b.satuan, b.kodepabrik, b.kodegolongan, b.hargar, b.discr1, b.kodebarang, 
+                            IFNULL(SUM(s.stokakhir),0) AS stokakhir 
+                            FROM filebarang b 
+                            LEFT JOIN stokbarang s ON b.kodebarang = S.kodebarang
+                            GROUP BY b.namabarang, b.satuan, b.kodepabrik, b.kodegolongan, b.hargar, b.discr1, b.kodebarang";
                 $A_SQL = mysqli_query($A_CONNECT,$A_QUERY);
                 while($A_RES = mysqli_fetch_array($A_SQL,MYSQLI_ASSOC)){
                 ?>
                 <tr>
                     <td><?php echo $A_RES['namabarang']; ?></td>
                     <td align="right"><?php echo number_format($A_RES['stokakhir']); ?></td>
-                    <td align="right"><?php echo number_format($A_RES['hargajual']); ?></td>
+                    <td align="right"><?php echo number_format($A_RES['hargar']); ?></td>
                     <?php
-                    if ($A_RES['discount']>100){
+                    if ($A_RES['discr1']>100){
                         ?>
-                        <td align="right"><?php echo number_format($A_RES['discount'],2); ?></td>
+                        <td align="right"><?php echo number_format($A_RES['discr1'],2); ?></td>
                         <?php
                     }else{
                         ?>
-                        <td align="right"><?php echo number_format($A_RES['discount'],2); ?></td>
+                        <td align="right"><?php echo number_format($A_RES['discr1'],2); ?></td>
                         <?php
                     }
                     ?>

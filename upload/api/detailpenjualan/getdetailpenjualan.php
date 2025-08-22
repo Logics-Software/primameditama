@@ -1,7 +1,7 @@
 <?php
 
 include_once '../../config/Database.php';
-include_once '../../models/FileCustomer.php';
+include_once '../../models/DetailPenjualan.php';
 
 header('Access-Control-Allow-Origin: *');
 header('Content-Type: application/json');
@@ -11,10 +11,12 @@ $database = new Database();
 $db = $database->connect();
 
 // Instantiate FileCustomer object
-$filecustomer = new FileCustomer($db);
+$detailpenjualan = new DetailPenjualan($db);
+
+$nopenjualan = isset($_GET['nopenjualan']) ? $_GET['nopenjualan'] : null;
 
 // Get customer(s)
-$response = $filecustomer->getcustomer();
+$response = $detailpenjualan->getdetailpenjualan($nopenjualan);
 
 // Output JSON response
 echo json_encode($response);

@@ -18,27 +18,61 @@
   // Get raw posted data
   $data = json_decode(file_get_contents("php://input"));
 
-  $stokbarang->kodegudang = $data->kodegudang;
-  $stokbarang->kodebarang = $data->kodebarang;
-  $stokbarang->nopembelian = $data->nopembelian;
-  $stokbarang->nomorbatch = $data->nomorbatch;
-  $stokbarang->tanggalperolehan = $data->tanggalperolehan;
-  $stokbarang->expireddate = $data->expireddate;
-  $stokbarang->hpp = $data->hpp;
-  $stokbarang->stokakhir = $data->stokakhir;
-  $stokbarang->status = $data->status;
- 
-  // Create Message
-  if($stokbarang->create()) {
-    $response=array(
-      'status' => 200,
-      'message' =>'Data Stok Barang Created!'
-    );
+  $success = 0;
+  $fail = 0;
+  if (!is_array($data)) {
+          //delete data
+          $stokbarang->kodegudang = $data->kodegudang;
+          $stokbarang->kodebarang = $data->kodebarang;
+          $stokbarang->nopembelian = $data->nopembelian;
+          $stokbarang->nomorbatch = $data->nomorbatch;
+          $stokbarang->delete();
+    
+          //insert data
+          $stokbarang->kodegudang = $data->kodegudang;
+          $stokbarang->kodebarang = $data->kodebarang;
+          $stokbarang->nopembelian = $data->nopembelian;
+          $stokbarang->nomorbatch = $data->nomorbatch;
+          $stokbarang->tanggalperolehan = $data->tanggalperolehan;
+          $stokbarang->expireddate = $data->expireddate;
+          $stokbarang->hpp = $data->hpp;
+          $stokbarang->stokakhir = $data->stokakhir;
+          $stokbarang->status = $data->status;
+          if ($stokbarang->create()) {
+              $success++;
+          } else {
+              $fail++;
+          }
   } else {
-    $response=array(
-      'status' => 400,
-      'message' =>'Data Stok Barang Not Created!'
-    );
+      foreach ($data as $item) {
+          //delete data
+          $stokbarang->kodegudang = $item->kodegudang;
+          $stokbarang->kodebarang = $item->kodebarang;
+          $stokbarang->nopembelian = $item->nopembelian;
+          $stokbarang->nomorbatch = $item->nomorbatch;
+          $stokbarang->delete();
+    
+          //insert data
+          $stokbarang->kodegudang = $item->kodegudang;
+          $stokbarang->kodebarang = $item->kodebarang;
+          $stokbarang->nopembelian = $item->nopembelian;
+          $stokbarang->nomorbatch = $item->nomorbatch;
+          $stokbarang->tanggalperolehan = $item->tanggalperolehan;
+          $stokbarang->expireddate = $item->expireddate;
+          $stokbarang->hpp = $item->hpp;
+          $stokbarang->stokakhir = $item->stokakhir;
+          $stokbarang->status = $item->status;
+          if ($stokbarang->create()) {
+              $success++;
+          } else {
+              $fail++;
+          }
+    }
   }
-  header('Content-Type: application/json');
+  $response = [
+      'status' => $fail === 0 ? 200 : 207,
+      'inserted' => "$success",
+      'failed' => "$fail",
+      'message' => "Inserted: $success, Failed: $fail"
+  ];
   echo json_encode($response);

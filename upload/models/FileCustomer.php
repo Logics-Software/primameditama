@@ -142,7 +142,7 @@
     }
 
   // Update Status Barang
-  public function update() {
+  public function updatestatus() {
     // Create query
     $query = 'UPDATE ' . $this->table  . ' SET status = 1 WHERE kodecustomer = :kodecustomer';
 
@@ -167,22 +167,10 @@
     }
 
   // Update Status Barang
-  public function getcustomer($kodecustomer = null) {
-    $query = "SELECT * FROM " . $this->table;
-    $params = [];
-
-    if ($kodecustomer !== null) {
-        $query .= " WHERE kodecustomer = :kodecustomer";
-        $params[':kodecustomer'] = $kodecustomer;
-    }
+  public function getcustomer() {
+    $query = "SELECT * FROM " . $this->table . " WHERE status = 0";
 
     $stmt = $this->conn->prepare($query);
-
-    // Bind parameter if needed
-    if ($kodecustomer !== null) {
-        $stmt->bindParam(':kodecustomer', $kodecustomer);
-    }
-
     $stmt->execute();
 
     $data = [];
@@ -190,7 +178,7 @@
         $data[] = $row;
     }
 
-    if ($kodecustomer !== null && empty($data)) {
+    if (empty($data)) {
         return [
             'status' => 404,
             'message' => 'Customer not found.',
@@ -201,7 +189,7 @@
     return [
         'status' => 200,
         'message' => 'Get Customer Successfully.',
-        'data' => $kodecustomer !== null ? $data[0] : $data
+        'data' => $data
     ];
   }
 }

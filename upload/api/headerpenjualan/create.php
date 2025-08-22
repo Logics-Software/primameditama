@@ -1,46 +1,88 @@
 <?php
-  // Headers
-  header('Access-Control-Allow-Origin: *');
-  header('Content-Type: application/json');
-  header('Access-Control-Allow-Methods: POST');
-  header('Access-Control-Allow-Headers: Access-Control-Allow-Headers, Content-Type, Access-Control-Allow-Methods, Authorization,X-Requested-With');
+    // Headers
+    header('Access-Control-Allow-Origin: *');
+    header('Content-Type: application/json');
+    header('Access-Control-Allow-Methods: POST');
+    header('Access-Control-Allow-Headers: Access-Control-Allow-Headers, Content-Type, Access-Control-Allow-Methods, Authorization,X-Requested-With');
 
-  include_once '../../config/Database.php';
-  include_once '../../models/Penjualan.php';
+    include_once '../../config/Database.php';
+    include_once '../../models/HeaderPenjualan.php';
 
-  // Instantiate DB & connect
-  $database = new Database();
-  $db = $database->connect();
+    // Instantiate DB & connect
+    $database = new Database();
+    $db = $database->connect();
 
-  // Instantiate blog post object
-  $penjualan = new Penjualan($db);
+    // Instantiate blog post object
+    $headerpenjualan = new HeaderPenjualan($db);
 
-  // Get raw posted data
-  $data = json_decode(file_get_contents("php://input"));
+    // Get raw posted data
+    $data = json_decode(file_get_contents("php://input"));
 
-  $penjualan->nopenjualan = $data->nopenjualan;
-  $penjualan->tanggal = $data->tanggal;
-  $penjualan->jatuhtempo = $data->jatuhtempo;
-  $penjualan->kodecustomer = $data->kodecustomer;
-  $penjualan->namacustomer = $data->namacustomer;
-  $penjualan->kodesalesman= $data->kodesalesman;
-  $penjualan->namasalesman = $data->namasalesman;
-  $penjualan->alamatcustomer = $data->alamatcustomer;
-  $penjualan->nilaipenjualan = $data->nilaipenjualan;
-  $penjualan->retur = $data->retur;
-  $penjualan->tunai = $data->tunai;
-  $penjualan->transfer = $data->transfer;
-  $penjualan->giro = $data->giro;
-  $penjualan->saldopenjualan = $data->saldopenjualan;
-  $penjualan->userid = $data->userid;
+    $success = 0;
+    $fail = 0;
+    if (!is_array($data)) {
+        //delete data
+        $headerpenjualan->nopenjualan = $data->nopenjualan;
+        $headerpenjualan->delete();
 
-  // Create Category
-  if($penjualan->create()) {
-    echo json_encode(
-      array('message' => 'Tagihan Piutang Created')
-    );
-  } else {
-    echo json_encode(
-      array('message' => 'Tagihan Piutang Not Created')
-    );
-  }
+        //insert data
+        $headerpenjualan->kodeformulir = $data->kodeformulir;
+        $headerpenjualan->nopenjualan = $data->nopenjualan;
+        $headerpenjualan->tanggalpenjualan = $data->tanggalpenjualan;
+        $headerpenjualan->kodetermin = $data->kodetermin;
+        $headerpenjualan->tanggaljatuhtempo = $data->tanggaljatuhtempo;
+        $headerpenjualan->nopo = $data->nopo;
+        $headerpenjualan->keterangan = $data->keterangan;
+        $headerpenjualan->kodecustomer = $data->kodecustomer;
+        $headerpenjualan->kodesalesman= $data->kodesalesman;
+        $headerpenjualan->kodepengirim = $data->kodepengirim;
+        $headerpenjualan->dpp = $data->dpp;
+        $headerpenjualan->ppn = $data->ppn;
+        $headerpenjualan->nilaipenjualan = $data->nilaipenjualan;
+        $headerpenjualan->saldopenjualan = $data->saldopenjualan;
+        $headerpenjualan->cnpenjualan = $data->cnpenjualan;
+        $headerpenjualan->userid = $data->userid;
+        $headerpenjualan->status = $data->status;
+        if ($headerpenjualan->create()) {
+            $success++;
+        } else {
+            $fail++;
+        }
+    } else {
+        foreach ($data as $item) {
+            //delete data
+            $headerpenjualan->nopenjualan = $item->nopenjualan;
+            $headerpenjualan->delete();
+
+            //insert data
+            $headerpenjualan->kodeformulir = $item->kodeformulir;
+            $headerpenjualan->nopenjualan = $item->nopenjualan;
+            $headerpenjualan->tanggalpenjualan = $item->tanggalpenjualan;
+            $headerpenjualan->kodetermin = $item->kodetermin;
+            $headerpenjualan->tanggaljatuhtempo = $item->tanggaljatuhtempo;
+            $headerpenjualan->nopo = $item->nopo;
+            $headerpenjualan->keterangan = $item->keterangan;
+            $headerpenjualan->kodecustomer = $item->kodecustomer;
+            $headerpenjualan->kodesalesman= $item->kodesalesman;
+            $headerpenjualan->kodepengirim = $item->kodepengirim;
+            $headerpenjualan->dpp = $item->dpp;
+            $headerpenjualan->ppn = $item->ppn;
+            $headerpenjualan->nilaipenjualan = $item->nilaipenjualan;
+            $headerpenjualan->saldopenjualan = $item->saldopenjualan;
+            $headerpenjualan->cnpenjualan = $item->cnpenjualan;
+            $headerpenjualan->userid = $item->userid;
+            $headerpenjualan->status = $item->status;
+            if ($headerpenjualan->create()) {
+                $success++;
+            } else {
+                $fail++;
+            }
+        }
+    }      
+    $response = [
+        'status' => $fail === 0 ? 200 : 207,
+        'inserted' => "$success",
+        'failed' => "$fail",
+        'message' => "Inserted: $success, Failed: $fail"
+    ];
+    echo json_encode($response);

@@ -21,9 +21,11 @@
   // Set ID to update
   $stokbarang->kodegudang = $data->kodegudang;
   $stokbarang->kodebarang = $data->kodebarang;
+  $stokbarang->nopembelian = $data->nopembelian;
+  $stokbarang->nomorbatch = $data->nomorbatch;
   
   // Delete post
-  if($stokbarang->updatestatus()) {
+  if($stokbarang->updatestatus($kodegudang, $kodebarang, $nopembelian, $nomorbatch)) {
     $response=array(
       'status' => 200,
       'message' =>'Update Status Stok Barang Success!'

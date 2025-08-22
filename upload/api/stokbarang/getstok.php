@@ -13,11 +13,8 @@ $db = $database->connect();
 // Instantiate FileCustomer object
 $stokbarang = new StokBarang($db);
 
-// Get kodebarang from query string if present
-$stokbarang = isset($_GET['kodegudang']) ? $_GET['kodegudang'] : null;
-
 // Get customer(s)
-$response = $filebarang->getstok($kodegudang);
+$response = $stokbarang->getstok();
 
 // Output JSON response
 echo json_encode($response);

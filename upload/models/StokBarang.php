@@ -67,7 +67,8 @@
   // Delete Category
   public function delete() {
     // Create query
-    $query = 'DELETE FROM ' . $this->table  . ' WHERE kodegudang = :kodegudang && kodebarang = :kodebarang';
+    $query = 'DELETE FROM ' . $this->table  . 
+             ' WHERE kodegudang = :kodegudang && kodebarang = :kodebarang && nopembelian = :nopembelian && nomorbatch = :nomorbatch';
 
     // Prepare Statement
     $stmt = $this->conn->prepare($query);
@@ -75,10 +76,14 @@
     // Clean data
     $this->kodegudang = htmlspecialchars(strip_tags($this->kodegudang));
     $this->kodebarang = htmlspecialchars(strip_tags($this->kodebarang));
+    $this->nopembelian = htmlspecialchars(strip_tags($this->nopembelian));
+    $this->nomorbatch= htmlspecialchars(strip_tags($this->nomorbatch));
     
     // Bind data
     $stmt->bindParam(':kodegudang', $this->kodegudang);
     $stmt->bindParam(':kodebarang', $this->kodebarang);
+    $stmt->bindParam(':nopembelian', $this->nopembelian);
+    $stmt->bindParam(':nomorbatch', $this->nomorbatch);
     
     // Execute query
     if($stmt->execute()) {
@@ -94,17 +99,15 @@
   // Delete Category
   public function resetstok() {
     // Create query
-    $query = 'UPDATE FROM ' . $this->table  . ' SET StokAkhir = 0 WHERE kodegudang = :kodegudang && kodebarang = :kodebarang';
+    $query = 'UPDATE FROM ' . $this->table  . ' SET StokAkhir = 0 WHERE kodebarang = :kodebarang';
 
     // Prepare Statement
     $stmt = $this->conn->prepare($query);
 
     // Clean data
-    $this->kodegudang = htmlspecialchars(strip_tags($this->kodegudang));
     $this->kodebarang = htmlspecialchars(strip_tags($this->kodebarang));
     
     // Bind data
-    $stmt->bindParam(':kodegudang', $this->kodegudang);
     $stmt->bindParam(':kodebarang', $this->kodebarang);
     
     // Execute query
@@ -121,7 +124,7 @@
   // Update Status Barang
   public function updatestatus() {
     // Create query
-    $query = 'UPDATE ' . $this->table  . ' SET status = 1 WHERE kodegudang = :kodegudang && kodebarang = :kodebarang';
+    $query = 'UPDATE ' . $this->table  . ' SET status = 1 WHERE kodegudang = :kodegudang && kodebarang = :kodebarang && nopembelian = :nopembelian && nomorbatch = :nomorbatch';
 
     // Prepare Statement
     $stmt = $this->conn->prepare($query);
@@ -129,10 +132,14 @@
     // Clean data
     $this->kodegudang = htmlspecialchars(strip_tags($this->kodegudang));
     $this->kodebarang = htmlspecialchars(strip_tags($this->kodebarang));
+    $this->nopembelian = htmlspecialchars(strip_tags($this->nopembelian));
+    $this->nomorbatch = htmlspecialchars(strip_tags($this->nomorbatch));
     
     // Bind data
     $stmt->bindParam(':kodegudang', $this->kodegudang);
     $stmt->bindParam(':kodebarang', $this->kodebarang);
+    $stmt->bindParam(':nopembelian', $this->nopembelian);
+    $stmt->bindParam(':nomorbatch', $this->nomorbatch);
     
     // Execute query
     if($stmt->execute()) {
@@ -146,22 +153,10 @@
   }
 
   // get Barang
-  public function getstok($kodegudang = null) {
-    $query = "SELECT * FROM " . $this->table;
-    $params = [];
-
-    if ($kodegudang !== null) {
-        $query .= " WHERE status = 0 && kodegudang = :kodegudang";
-        $params[':kodegudang'] = $kodegudang;
-    }
-
+  public function getstok() {
+    $query = "SELECT * FROM " . $this->table . " WHERE status = 0";
+  
     $stmt = $this->conn->prepare($query);
-
-    // Bind parameter if needed
-    if ($kodegudang !== null) {
-        $stmt->bindParam(':kodegudang', $kodegudang);
-    }
-
     $stmt->execute();
 
     $data = [];
@@ -169,7 +164,7 @@
         $data[] = $row;
     }
 
-    if ($kodegudang !== null && empty($data)) {
+    if (empty($data)) {
         return [
             'status' => 404,
             'message' => 'Barang not found.',
@@ -180,7 +175,7 @@
     return [
         'status' => 200,
         'message' => 'Get Barang Successfully.',
-        'data' => $kodegudang !== null ? $data[0] : $data
+        'data' => $data
     ];
   }
 }
