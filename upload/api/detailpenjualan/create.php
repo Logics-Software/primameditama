@@ -20,10 +20,16 @@
 
     //delete data
     if (is_array($data)) {
-        foreach ($data as $item) {
+      $nopenjualan = '';
+      foreach ($data as $item) {
+          $row ++;
+          if ($nopenjualan  !== $item->nopenjualan) {
             $detailpenjualan->nopenjualan = $item->nopenjualan;
             $detailpenjualan->delete();
-        }
+
+            $nopenjualan = $item->nopenjualan;
+          } 
+      }
     } else {
         $detailpenjualan->nopenjualan = $data->nopenjualan;
         $detailpenjualan->delete();
