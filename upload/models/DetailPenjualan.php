@@ -48,7 +48,7 @@ class DetailPenjualan {
   $this->cn = htmlspecialchars(strip_tags($this->cn));
   $this->totalharga = htmlspecialchars(strip_tags($this->totalharga));
   $this->nourut = htmlspecialchars(strip_tags($this->nourut));
-  
+
   // Bind data
   $stmt->bindParam(':nopenjualan', $this->nopenjualan);
   $stmt->bindParam(':kodebarang', $this->kodebarang);

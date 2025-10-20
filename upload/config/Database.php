@@ -4,7 +4,7 @@
     private $host = 'localhost';
     private $db_name = 'prima';
     private $username = 'root';
-    private $password = '';
+    private $password = '051199';
     private $conn;
 
     // DB Connect

@@ -56,12 +56,6 @@
             } else {
                 $fail++;
             }
-            $response = [
-                'status' => $fail === 0 ? 200 : 207,
-                'inserted' => "$success",
-                'failed' => "$fail",
-                'message' => "Inserted: $success, Failed: $fail"
-            ];
     } else {
         $success = 0;
         $fail = 0;
@@ -85,11 +79,12 @@
                 $fail++;
             }
         }
-        $response = [
-            'status' => $fail === 0 ? 200 : 207,
-            'inserted' => "$success",
-            'failed' => "$fail",
-            'message' => "Inserted: $success, Failed: $fail"
-        ];
     }
+
+    $response = [
+        'status' => $fail === 0 ? 200 : 207,
+        'inserted' => "$success",
+        'failed' => "$fail",
+        'message' => "Inserted: $success, Failed: $fail"
+    ];
     echo json_encode($response);
