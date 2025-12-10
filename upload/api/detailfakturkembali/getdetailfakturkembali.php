@@ -1,7 +1,7 @@
 <?php
 
 include_once '../../config/Database.php';
-include_once '../../models/DetailTerimaDistribusi.php';
+include_once '../../models/DetailFakturKembali.php';
 
 header('Access-Control-Allow-Origin: *');
 header('Content-Type: application/json');
@@ -11,12 +11,12 @@ $database = new Database();
 $db = $database->connect();
 
 // Instantiate FileCustomer object
-$detailterimadistribusi = new DetailTerimaDistribusi($db);
+$detailfakturkembali = new DetailFakturKembali($db);
 
-$nopenerimaan = isset($_GET['nopenerimaan']) ? $_GET['nopenerimaan'] : null;
+$nokembali = isset($_GET['nokembali']) ? $_GET['nokembali'] : null;
 
 // Get customer(s)
-$response = $detailterimadistribusi->getdetaildetaildistribusi($nopenerimaan);
+$response = $detailfakturkembali->getdetailfakturkembali($nokembali);
 
 // Output JSON response
 echo json_encode($response);
