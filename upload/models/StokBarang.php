@@ -99,7 +99,7 @@
   // Delete Category
   public function resetstok() {
     // Create query
-    $query = 'UPDATE FROM ' . $this->table  . ' SET StokAkhir = 0 WHERE kodebarang = :kodebarang';
+    $query = 'UPDATE ' . $this->table  . ' SET StokAkhir = 0 WHERE kodebarang = :kodebarang';
 
     // Prepare Statement
     $stmt = $this->conn->prepare($query);
