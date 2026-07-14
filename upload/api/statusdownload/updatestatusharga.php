@@ -1,7 +1,7 @@
 <?php
 
 include_once '../../config/Database.php';
-include_once '../../models/FileCustomer.php';
+include_once '../../models/StatusDownload.php';
 
 header('Access-Control-Allow-Origin: *');
 header('Content-Type: application/json');
@@ -11,23 +11,24 @@ $database = new Database();
 $db = $database->connect();
 
 // Instantiate FileCustomer object
-$filecustomer = new FileCustomer($db);
+$statusdownload = new StatusDownload($db);
 
 // Get raw posted data
 $data = json_decode(file_get_contents("php://input"));
 
 // Set ID to update
-$filecustomer->kodecustomer = $data->kodecustomer;
+$statusdownload->kodebarang = $data->kodebarang;
+$statusdownload->kodegudang = $data->kodegudang;
   
 // Delete post
-if($filecustomer->updatestatus()) {
+if($statusdownload->updatestatusharga()) {
     echo json_encode(
     array('status' => '200',
-          'message' => 'Status Customer updated!')
+          'message' => 'Status Level Harga Barang updated!')
     );
 } else {
     echo json_encode(
     array('status' => '207',
-          'message' => 'Update Customer failed!')
+          'message' => 'Update Status Level Harga Barang failed!')
     );
 }

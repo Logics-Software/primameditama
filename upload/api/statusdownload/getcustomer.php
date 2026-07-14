@@ -1,7 +1,7 @@
 <?php
 
 include_once '../../config/Database.php';
-include_once '../../models/HeaderPenjualan.php';
+include_once '../../models/StatusDownload.php';
 
 header('Access-Control-Allow-Origin: *');
 header('Content-Type: application/json');
@@ -11,11 +11,12 @@ $database = new Database();
 $db = $database->connect();
 
 // Instantiate FileCustomer object
-$headerpenjualan = new HeaderPenjualan($db);
-$headerpenjualan->kodegudang = isset($_GET['kodegudang']) ? urldecode($_GET['kodegudang']) : null;
+$statusdownload = new StatusDownload($db);
+
+$statusdownload->kodegudang = isset($_GET['kodegudang']) ? urldecode($_GET['kodegudang']) : null;
 
 // Get customer(s)
-$response = $headerpenjualan->getheaderpenjualan();
+$response = $statusdownload->getstatuscustomer();
 
 // Output JSON response
 echo json_encode($response);

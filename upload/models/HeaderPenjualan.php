@@ -21,6 +21,7 @@ class HeaderPenjualan {
   public $saldopenjualan;
   public $cnpenjualan;
   public $userid;
+  public $kodegudang;
   public $status;
 
   // Constructor with DB
@@ -36,7 +37,7 @@ class HeaderPenjualan {
       kodeformulir = :kodeformulir, nopenjualan = :nopenjualan, tanggalpenjualan = :tanggalpenjualan, kodetermin = :kodetermin,
       tanggaljatuhtempo = :tanggaljatuhtempo, nopo = :nopo, keterangan = :keterangan, kodecustomer = :kodecustomer, 
       kodesalesman = :kodesalesman, kodepengirim = :kodepengirim, dpp = :dpp, ppn = :ppn, nilaipenjualan = :nilaipenjualan, 
-      saldopenjualan = :saldopenjualan, cnpenjualan = :cnpenjualan, userid = :userid, status = :status';  
+      saldopenjualan = :saldopenjualan, cnpenjualan = :cnpenjualan, userid = :userid, kodegudang = :kodegudang, status = :status';  
 
   // Prepare Statement
   $stmt = $this->conn->prepare($query);
@@ -57,6 +58,7 @@ class HeaderPenjualan {
   $this->saldopenjualan = strip_tags($this->saldopenjualan);
   $this->cnpenjualan = strip_tags($this->cnpenjualan);
   $this->userid = strip_tags($this->userid);
+  $this->kodegudang = strip_tags($this->kodegudang);
   $this->status = strip_tags($this->status);
 
   // Bind data
@@ -76,6 +78,7 @@ class HeaderPenjualan {
   $stmt->bindParam(':saldopenjualan', $this->saldopenjualan);
   $stmt->bindParam(':cnpenjualan', $this->cnpenjualan);
   $stmt->bindParam(':userid', $this->userid);
+  $stmt->bindParam(':kodegudang', $this->kodegudang);
   $stmt->bindParam(':status', $this->status);
 
   // Execute query
@@ -139,11 +142,18 @@ class HeaderPenjualan {
     return false;
     }
 
-  // Update Status Barang
   public function getheaderpenjualan() {
-    $query = "SELECT * FROM " . $this->table . " WHERE status = 0 ORDER BY nopenjualan";
+    $query = "SELECT * FROM " . $this->table . " WHERE status = 0 AND kodegudang = :kodegudang ORDER BY nopenjualan";
 
+    // Prepare Statement
     $stmt = $this->conn->prepare($query);
+
+    // Clean data
+    $this->kodegudang  = strip_tags($this->kodegudang);
+    
+    // Bind data
+    $stmt->bindParam(':kodegudang', $this->kodegudang);
+
     $stmt->execute();
 
     $data = [];

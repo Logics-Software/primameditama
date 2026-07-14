@@ -42,6 +42,7 @@
         $headerpenjualan->saldopenjualan = isset($data->saldopenjualan) ? urldecode($data->saldopenjualan) : null;
         $headerpenjualan->cnpenjualan = isset($data->cnpenjualan) ? urldecode($data->cnpenjualan) : null;
         $headerpenjualan->userid = isset($data->userid) ? urldecode($data->userid) : null;
+        $headerpenjualan->kodegudang = isset($data->kodegudang) ? urldecode($data->kodegudang) : null;
         $headerpenjualan->status = isset($data->status) ? urldecode($data->status) : null;
         if ($headerpenjualan->create()) {
             $success++;
@@ -71,6 +72,7 @@
             $headerpenjualan->saldopenjualan = isset($item->saldopenjualan) ? urldecode($item->saldopenjualan) : null;
             $headerpenjualan->cnpenjualan = isset($item->cnpenjualan) ? urldecode($item->cnpenjualan) : null;
             $headerpenjualan->userid = isset($item->userid) ? urldecode($item->userid) : null;
+            $headerpenjualan->kodegudang = isset($item->kodegudang) ? urldecode($item->kodegudang) : null;
             $headerpenjualan->status = isset($item->status) ? urldecode($item->status) : null;
             if ($headerpenjualan->create()) {
                 $success++;

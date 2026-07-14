@@ -22,7 +22,7 @@
   $headerpenjualan->nopenjualan = $data->nopenjualan;
   
   // Delete post
-  if($headerpenjualan->updatestatus($nopenjualan)) {
+  if($headerpenjualan->updatestatus()) {
     $response=array(
       'status' => 200,
       'message' =>'Update Status Header Penjualan Success!'

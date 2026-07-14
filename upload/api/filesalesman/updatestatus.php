@@ -20,7 +20,7 @@ $data = json_decode(file_get_contents("php://input"));
 $filesalesman->kodesalesman = $data->kodesalesman;
   
 // Delete post
-if($filesalesman->updatestatus($kodesalesman)) {
+if($filesalesman->updatestatus()) {
     echo json_encode(
     array('status' => '200',
           'message' => 'Status Salesman updated!')
